@@ -1,10 +1,7 @@
-import { useState, useMemo } from 'react';
-import { useMovies } from '../hooks/useMovies'
+import { useMemo } from 'react';
 
-const Movies = () => {
-    const { movies } = useMovies();
+const Movies = ({ movies }) => {
     const hasMovies = useMemo(() => movies?.length > 0, [movies])
-    const [loading, setLoading] = useState<boolean>(false)
 
     return (
         <section className="results">

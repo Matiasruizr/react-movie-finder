@@ -2,9 +2,16 @@
 import './App.css';
 import Movies from './components/Movies'
 import { useSearch } from './hooks/useSearch';
+import { useMovies } from './hooks/useMovies';
 
 function App() {
-  const { query, error, handleChange, handleSubmit } = useSearch()
+  const { query, error, handleChange } = useSearch()
+  const { movies, getMovies, loading } = useMovies()
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    getMovies(query)
+  }
 
   return (
     <div>
@@ -22,7 +29,12 @@ function App() {
 
       <main>
         <h2>Results</h2>
-        <Movies />
+        {loading && <p className='loading'>Loading...</p>}
+        {!loading && movies.length === 0 && <p className='no-results'>No results found</p>}
+        {!loading && movies.length > 0 && <p className='results-count'>{movies.length} results found</p>}
+        {!loading && movies.length > 0 && (
+          <Movies movies={movies} />
+        )}
       </main>
     </div>
   )

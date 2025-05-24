@@ -1,11 +1,11 @@
 import { useEffect, useState, useRef } from 'react'
+import { useMovies } from './useMovies'
 
 export function useSearch() {
   const [query, setQuery] = useState<string>('')
   const [error, setError] = useState<string | null>(null)
   const isFirstRender = useRef(true)
-
-  console.log(isFirstRender)
+  const { getMovies } = useMovies()
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target
@@ -37,9 +37,9 @@ export function useSearch() {
     setError(null)
   }, [query])
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        console.log('Search for:', query)
+        getMovies(query)
     }
 
   return { query, error, handleChange, handleSubmit }

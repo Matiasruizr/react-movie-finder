@@ -1,28 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { searchMovies } from '../services/movies.ts';
 
 export function useMovies() {
-    const apiKey = "4287ad07"
-    const baseApi = `http://www.omdbapi.com/?apikey=${apiKey}&`
-
     const [movies, setMovies] = useState<any[]>([])
+    const [error, setError] = useState<string | null>(null)
+    const [loading, setLoading] = useState<boolean>(false)
     
-    useEffect(() => {
-        const fetchMovies = async () => {
-            const response = await fetch(`${baseApi}s=godfather`)
-            const data = await response.json()
-            setMovies(data.Search)
+    const getMovies = async (search: string) => {
+        try {
+            setLoading(true)
+            const newMovies = await searchMovies(search)
+            setMovies(newMovies)
+            
+        } catch (error) {
+            setError('An error occurred while fetching the movies')
+        } finally {
+            setLoading(false)
         }
-        
-        fetchMovies()
-    }, [])
-    
-    const mappedMovies = movies?.map(movie => ({
-        id: movie.imdbID,
-        title: movie.Title,
-        year: movie.Year,
-        poster: movie.Poster,
-        type: movie.type
-    }))
+    }
 
-    return { movies: mappedMovies }
+    return { movies, getMovies, error, loading }
 }
