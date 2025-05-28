@@ -42,5 +42,5 @@ export function useSearch() {
         getMovies(query)
     }
 
-  return { query, error, handleChange, handleSubmit }
+  return { query, error, handleChange, handleSubmit, setQuery }
 } 

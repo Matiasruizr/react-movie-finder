@@ -3,14 +3,29 @@ import './App.css';
 import Movies from './components/Movies'
 import { useSearch } from './hooks/useSearch';
 import { useMovies } from './hooks/useMovies';
+import debounce from "just-debounce-it";
+import React, { useCallback } from 'react';
 
 function App() {
-  const { query, error, handleChange } = useSearch()
+  const { query, error, setQuery } = useSearch()
   const { movies, getMovies, loading } = useMovies()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     getMovies(query)
+  }
+
+  const debouncedGetMovies = useCallback(
+    debounce((search: string) => {
+      if (search) {
+        getMovies(search);
+      }
+    }, 500), [getMovies]);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target
+    setQuery(value)
+    debouncedGetMovies(value);
   }
 
   return (

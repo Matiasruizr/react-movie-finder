@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { searchMovies } from '../services/movies.ts';
+import { useCallback } from 'react';
 
 export function useMovies() {
     const [movies, setMovies] = useState<any[]>([])
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
     
-    const getMovies = async (search: string) => {
+    const getMovies = useCallback(async (search: string) => {
         try {
             setLoading(true)
             const newMovies = await searchMovies(search)
@@ -17,7 +18,7 @@ export function useMovies() {
         } finally {
             setLoading(false)
         }
-    }
+    }, []);
 
-    return { movies, getMovies, error, loading }
+    return { movies, getMovies, error, loading  };
 }
